@@ -1,6 +1,6 @@
 name: mlflow_project
 
-conda_env: conda.yaml
+pip_requirements: requirements.txt
 
 entry_points:
   main:
