@@ -2,24 +2,33 @@ name: MLflow CI
 
 on:
   push:
-    branches: [ "master" ]
+    paths:
+      - "MLProject/**"
+      - "MLProject/MLproject"
+      - "MLProject/requirements.txt"
+      - "modelling.py"
+      - ".github/workflows/mlflow-ci.yml"
+  workflow_dispatch:
 
 jobs:
-  run-mlproject:
+  run-mlflow:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3
+      - name: Checkout Repo
+        uses: actions/checkout@v3
 
-    - name: Install Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
 
-    - name: Install MLflow
-      run: pip install mlflow
+      - name: Install dependencies
+        run: |
+          pip install mlflow
+          pip install -r MLProject/requirements.txt
 
-    - name: Run MLflow Project
-      working-directory: ./MLProject
-      run: mlflow run .
+      - name: Run MLflow project
+        run: |
+          cd MLProject
+          mlflow run . --env-manager=local
