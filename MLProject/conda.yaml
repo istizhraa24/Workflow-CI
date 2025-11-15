@@ -1,6 +1,6 @@
-name: monitoring-env
+name: mlflow_env
 channels:
-  - defaults
+  - conda-forge
 dependencies:
   - python=3.10
   - pip
@@ -8,4 +8,3 @@ dependencies:
       - mlflow
       - scikit-learn
       - pandas
-      - numpy

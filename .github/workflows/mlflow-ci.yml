@@ -1,31 +1,25 @@
-name: MLflow CI Pipeline
+name: MLflow CI
 
 on:
   push:
-    branches:
-      - master
-  workflow_dispatch: {}
+    branches: [ "master" ]
 
 jobs:
-  build-train:
+  run-mlproject:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+    - name: Checkout repo
+      uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
+    - name: Install Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: "3.10"
 
-      - name: Check Python version
-        run: python --version
+    - name: Install MLflow
+      run: pip install mlflow
 
-      - name: Install dependencies
-        run: |
-          pip install mlflow
-          pip install -r MLProject/requirements.txt || true
-
-      - name: Run MLflow Project
-        run: mlflow run MLProject
+    - name: Run MLflow Project
+      working-directory: ./MLProject
+      run: mlflow run .

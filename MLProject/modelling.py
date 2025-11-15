@@ -1,38 +1,50 @@
 import pandas as pd
 import mlflow
-import mlflow.sklearn
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
+import argparse
 
+# PARSE ARGUMENTS
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--data_path", type=str, required=True)
+args = parser.parse_args()
+
+data_path = args.data_path
+print("Dataset path:", data_path)
 
 # LOAD DATA
 
-df = pd.read_csv("namadataset_preprocessing/data_clean.csv")
+df = pd.read_csv(data_path)
 
 X = df["clean_message"]
 y = df["label_encoded"]
 
+
 # SPLIT
+
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.2, random_state=42, stratify=y
 )
 
+# TF-IDF
+
 vectorizer = TfidfVectorizer()
-X_train_tf = vectorizer.fit_transform(X_train)
-X_test_tf = vectorizer.transform(X_test)
+X_train_vec = vectorizer.fit_transform(X_train)
+X_test_vec = vectorizer.transform(X_test)
 
-# MLFLOW AUTLOG
+# MODEL
 
-mlflow.autolog()
+model = LogisticRegression(max_iter=1000)
+model.fit(X_train_vec, y_train)
 
-with mlflow.start_run():
+y_pred = model.predict(X_test_vec)
+acc = accuracy_score(y_test, y_pred)
 
-    model = LogisticRegression(max_iter=200)
-    model.fit(X_train_tf, y_train)
+print("Accuracy:", acc)
 
-    y_pred = model.predict(X_test_tf)
-    acc = accuracy_score(y_test, y_pred)
+# LOGGING MLFLOW
 
-    print("Accuracy:", acc)
+mlflow.log_metric("accuracy", acc)
