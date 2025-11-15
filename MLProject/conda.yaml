@@ -1,11 +1,11 @@
-name: mlflow-env
+name: monitoring-env
 channels:
   - defaults
 dependencies:
-  - python=3.12
+  - python=3.10
   - pip
   - pip:
+      - mlflow
+      - scikit-learn
       - pandas
       - numpy
-      - scikit-learn
-      - mlflow
