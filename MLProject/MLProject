@@ -1,7 +1,6 @@
-name: workflow_ci_model
+name: workflow-mlflow
 
-python_env: 
-  pip_requirements: requirements.txt
+python_env: conda.yaml
 
 entry_points:
   main:
